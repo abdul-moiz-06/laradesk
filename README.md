@@ -39,6 +39,7 @@ Controller → Action → Service (external API) → Job (queued work)
 
 ## Folder Structure
 
+```
 app/Actions/Tickets/       CreateTicket, AssignTicket, CloseTicket, ReplyToTicket
 app/Actions/AI/            ProcessTicketWithAI
 app/Actions/Tenants/       CreateTenant, ProvisionTenantDatabase
@@ -51,6 +52,7 @@ app/Listeners/             DispatchAIProcessing, NotifyAgentOnAssignment
 app/Http/Controllers/Api/  TicketController
 app/Http/Requests/         CreateTicketRequest, ReplyToTicketRequest
 app/Filament/Resources/    TicketResource, AgentResource, TenantResource
+```
 
 ## Ticket Lifecycle
 
