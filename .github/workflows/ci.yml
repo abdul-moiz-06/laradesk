@@ -96,11 +96,11 @@ jobs:
   rector:
     name: Rector (advisory)
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-php
-      - run: vendor/bin/rector process --dry-run
+      # Advisory only — surface refactor suggestions in the log without failing the check.
+      - run: vendor/bin/rector process --dry-run || true
 
   ci-passed:
     name: CI Passed
