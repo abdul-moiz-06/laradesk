@@ -20,21 +20,21 @@ arch('security best practices')
     ->preset()
     ->security();
 
-// Layering rules — uncomment each as the corresponding namespace is created.
-// These enforce the architecture defined in CLAUDE.md.
-//
+// Layering rules — activated as each namespace comes into existence.
+
+arch('actions are invokable single-responsibility classes')
+    ->expect('App\Actions')
+    ->toBeInvokable();
+
+arch('DTOs are readonly and immutable')
+    ->expect('App\DTOs')
+    ->toBeReadonly();
+
+arch('models never depend on services')
+    ->expect('App\Models')
+    ->not->toUse('App\Services');
+
+// Uncomment as controllers land:
 // arch('controllers stay thin — no direct DB access')
 //     ->expect('App\Http\Controllers')
 //     ->not->toUse('Illuminate\Support\Facades\DB');
-//
-// arch('actions are invokable single-responsibility classes')
-//     ->expect('App\Actions')
-//     ->toBeClasses();
-//
-// arch('models hold no business logic — never depend on services')
-//     ->expect('App\Models')
-//     ->not->toUse('App\Services');
-//
-// arch('DTOs are readonly and immutable')
-//     ->expect('App\DTOs')
-//     ->toBeReadonly();
