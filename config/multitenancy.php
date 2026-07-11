@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\Tenant;
+use Illuminate\Broadcasting\BroadcastEvent;
+use Illuminate\Events\CallQueuedListener;
+use Illuminate\Mail\SendQueuedMailable;
+use Illuminate\Notifications\SendQueuedNotifications;
+use Illuminate\Queue\CallQueuedClosure;
+use Spatie\Multitenancy\Actions\ForgetCurrentTenantAction;
+use Spatie\Multitenancy\Actions\MakeQueueTenantAwareAction;
+use Spatie\Multitenancy\Actions\MakeTenantCurrentAction;
+use Spatie\Multitenancy\Actions\MigrateTenantAction;
+use Spatie\Multitenancy\Jobs\NotTenantAware;
+use Spatie\Multitenancy\Jobs\TenantAware;
+use Spatie\Multitenancy\Tasks\PrefixCacheTask;
+use Spatie\Multitenancy\TenantFinder\DomainTenantFinder;
+
+return [
+    /*
+     * Determines the current tenant for a given request by matching the request
+     * host against each tenant's `domain` column.
+     */
+    'tenant_finder' => DomainTenantFinder::class,
+
+    /*
+     * Fields used by the `tenants:artisan` command to match one or more tenants.
+     */
+    'tenant_artisan_search_fields' => [
+        'id',
+    ],
+
+    /*
+     * Tasks performed when switching tenants. Single shared database: we do NOT
+     * switch database connections — we only namespace the cache per tenant.
+     */
+    'switch_tenant_tasks' => [
+        PrefixCacheTask::class,
+    ],
+
+    'tenant_model' => Tenant::class,
+
+    /*
+     * Jobs dispatched while a tenant is current remember that tenant and restore
+     * it when executed.
+     */
+    'queues_are_tenant_aware_by_default' => true,
+
+    /*
+     * Single shared database: both connections use the default connection (null).
+     */
+    'tenant_database_connection_name' => null,
+
+    'landlord_database_connection_name' => null,
+
+    'current_tenant_context_key' => 'tenantId',
+
+    'current_tenant_container_key' => 'currentTenant',
+
+    'shared_routes_cache' => false,
+
+    'actions' => [
+        'make_tenant_current_action' => MakeTenantCurrentAction::class,
+        'forget_current_tenant_action' => ForgetCurrentTenantAction::class,
+        'make_queue_tenant_aware_action' => MakeQueueTenantAwareAction::class,
+        'migrate_tenant' => MigrateTenantAction::class,
+    ],
+
+    'queueable_to_job' => [
+        SendQueuedMailable::class => 'mailable',
+        SendQueuedNotifications::class => 'notification',
+        CallQueuedClosure::class => 'closure',
+        CallQueuedListener::class => 'class',
+        BroadcastEvent::class => 'event',
+    ],
+
+    'tenant_aware_interface' => TenantAware::class,
+
+    'not_tenant_aware_interface' => NotTenantAware::class,
+
+    'tenant_aware_jobs' => [
+        //
+    ],
+
+    'not_tenant_aware_jobs' => [
+        //
+    ],
+];
