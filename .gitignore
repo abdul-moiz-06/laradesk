@@ -33,6 +33,9 @@ coverage.xml
 .claude/
 CLAUDE.md
 
+# Local project docs (not shared)
+/docs/
+
 # IDEs & editors
 .phpactor.json
 _ide_helper.php
