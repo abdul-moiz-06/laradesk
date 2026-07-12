@@ -7,4 +7,7 @@ parameters:
         - app
         - database
         - routes
+    excludePaths:
+        # Vendor-published migration (spatie/laravel-permission) — third-party generated code.
+        - database/migrations/*_create_permission_tables.php
     tmpDir: build/phpstan
