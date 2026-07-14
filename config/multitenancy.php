@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Tenant;
+use App\Multitenancy\SetPostgresTenantVariable;
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Mail\SendQueuedMailable;
@@ -33,10 +34,12 @@ return [
 
     /*
      * Tasks performed when switching tenants. Single shared database: we do NOT
-     * switch database connections — we only namespace the cache per tenant.
+     * switch database connections. We namespace the cache per tenant and bind
+     * the PostgreSQL `app.current_tenant` variable that drives Row-Level Security.
      */
     'switch_tenant_tasks' => [
         PrefixCacheTask::class,
+        SetPostgresTenantVariable::class,
     ],
 
     'tenant_model' => Tenant::class,

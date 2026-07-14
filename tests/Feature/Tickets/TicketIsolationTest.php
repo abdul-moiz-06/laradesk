@@ -29,7 +29,8 @@ it('never leaks tickets across tenants', function (): void {
     expect(Ticket::count())->toBe(1)
         ->and(Ticket::sole()->title)->toBe('A ticket');
 
-    // With no current tenant (e.g. a SuperAdmin context) the global scope is inactive.
+    // With no current tenant, Row-Level Security fails closed on the app connection:
+    // even with the Eloquent global scope inactive, no tenant's rows are exposed.
     Tenant::forgetCurrent();
-    expect(Ticket::count())->toBe(2);
+    expect(Ticket::count())->toBe(0);
 });

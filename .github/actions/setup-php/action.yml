@@ -14,7 +14,7 @@ runs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ inputs.php-version }}
-        extensions: mbstring, pdo, pdo_mysql, redis, bcmath, intl, zip, gd
+        extensions: mbstring, pdo, pgsql, pdo_pgsql, redis, bcmath, intl, zip, gd
         coverage: xdebug
         tools: composer:v2
 
