@@ -34,7 +34,6 @@ arch('models never depend on services')
     ->expect('App\Models')
     ->not->toUse('App\Services');
 
-// Uncomment as controllers land:
-// arch('controllers stay thin — no direct DB access')
-//     ->expect('App\Http\Controllers')
-//     ->not->toUse('Illuminate\Support\Facades\DB');
+arch('controllers stay thin — no direct DB access')
+    ->expect('App\Http\Controllers')
+    ->not->toUse('Illuminate\Support\Facades\DB');
