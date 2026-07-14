@@ -101,6 +101,26 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
+        /*
+         * Privileged connection that BYPASSES Row-Level Security. It is reserved
+         * exclusively for explicitly gated SuperAdmin cross-tenant tasks — never
+         * for ordinary request handling, which must use the RLS-governed 'pgsql'.
+         */
+        'pgsql_admin' => [
+            'driver' => 'pgsql',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_ADMIN_USERNAME', 'postgres'),
+            'password' => env('DB_ADMIN_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),

@@ -11,8 +11,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\Multitenancy\Jobs\TenantAware;
 
-final class ProcessTicketWithAI implements ShouldQueue
+final class ProcessTicketWithAI implements ShouldQueue, TenantAware
 {
     use Dispatchable;
     use InteractsWithQueue;
