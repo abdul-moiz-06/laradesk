@@ -34,18 +34,26 @@ class PermissionSeeder extends Seeder
         'agent.delete',
     ];
 
+    /**
+     * @var list<string>
+     */
+    private const array AUDIT_PERMISSIONS = [
+        'audit.viewAny',
+    ];
+
     public function run(): void
     {
-        foreach ([...self::TICKET_PERMISSIONS, ...self::AGENT_PERMISSIONS] as $name) {
+        foreach ([...self::TICKET_PERMISSIONS, ...self::AGENT_PERMISSIONS, ...self::AUDIT_PERMISSIONS] as $name) {
             Permission::findOrCreate($name);
         }
 
         // Refresh the cache so the freshly-created permissions resolve by name.
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // TenantAdmin runs the whole company desk; Agents work tickets only.
+        // TenantAdmin runs the whole company desk (incl. the audit trail);
+        // Agents work tickets only.
         Role::findByName(RoleEnum::TenantAdmin->value)
-            ->givePermissionTo([...self::TICKET_PERMISSIONS, ...self::AGENT_PERMISSIONS]);
+            ->givePermissionTo([...self::TICKET_PERMISSIONS, ...self::AGENT_PERMISSIONS, ...self::AUDIT_PERMISSIONS]);
 
         Role::findByName(RoleEnum::Agent->value)
             ->givePermissionTo(self::TICKET_PERMISSIONS);

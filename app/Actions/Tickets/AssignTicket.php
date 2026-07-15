@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Tickets;
 
 use App\Enums\TicketStatus;
+use App\Events\TicketAssigned;
 use App\Models\Ticket;
 use App\Models\User;
 
@@ -19,6 +20,8 @@ final class AssignTicket
         }
 
         $ticket->save();
+
+        TicketAssigned::dispatch($ticket, $agent);
 
         return $ticket;
     }

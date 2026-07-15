@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Tickets;
 
 use App\Enums\TicketStatus;
+use App\Events\TicketClosed;
 use App\Models\Ticket;
 
 final class CloseTicket
@@ -13,6 +14,8 @@ final class CloseTicket
     {
         $ticket->status = TicketStatus::Closed;
         $ticket->save();
+
+        TicketClosed::dispatch($ticket);
 
         return $ticket;
     }
