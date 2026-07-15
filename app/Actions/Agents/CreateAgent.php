@@ -6,6 +6,7 @@ namespace App\Actions\Agents;
 
 use App\DTOs\CreateAgentDTO;
 use App\Enums\Role;
+use App\Events\AgentInvited;
 use App\Models\Tenant;
 use App\Models\User;
 use Filament\Auth\Notifications\ResetPassword;
@@ -45,6 +46,8 @@ final class CreateAgent
         $notification = new ResetPassword($token);
         $notification->url = Filament::getResetPasswordUrl($token, $agent);
         $agent->notify($notification);
+
+        AgentInvited::dispatch($agent);
 
         return $agent;
     }
