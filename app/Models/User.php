@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Enums\TenantStatus;
 use Database\Factories\UserFactory;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
@@ -43,8 +44,24 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
      */
     public function canAccessPanel(Panel $panel): bool
     {
+        // The platform panel is for the SuperAdmin, who belongs to no company.
+        if ($panel->getId() === 'super') {
+            return $this->hasRole(Role::SuperAdmin->value);
+        }
+
+        // The tenant panel is for a company's staff, and a suspended company's
+        // staff are locked out entirely.
         return $this->tenant_id !== null
-            && $this->hasAnyRole([Role::TenantAdmin->value, Role::Agent->value]);
+            && $this->hasAnyRole([Role::TenantAdmin->value, Role::Agent->value])
+            && ! $this->belongsToSuspendedTenant();
+    }
+
+    public function belongsToSuspendedTenant(): bool
+    {
+        return Tenant::query()
+            ->whereKey($this->tenant_id)
+            ->where('status', TenantStatus::Suspended->value)
+            ->exists();
     }
 
     public function getAppAuthenticationSecret(): ?string

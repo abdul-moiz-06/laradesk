@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Enums\TenantStatus;
 use App\Models\Tenant;
 use App\Models\User;
 use Closure;
@@ -32,6 +33,10 @@ final class SetTenantFromToken
 
         if ($tenant === null) {
             abort(403, 'The associated tenant could not be found.');
+        }
+
+        if ($tenant->status === TenantStatus::Suspended) {
+            abort(403, 'This company is suspended.');
         }
 
         $tenant->makeCurrent();
