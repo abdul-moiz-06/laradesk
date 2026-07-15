@@ -18,12 +18,12 @@ it('lets a tenant admin open the audit log', function (): void {
     $admin = User::factory()->create(['tenant_id' => $this->tenant->id]);
     $admin->assignRole(Role::TenantAdmin->value);
 
-    $this->actingAs($admin)->get('/admin/activities')->assertOk();
+    $this->actingAs(withMfa($admin))->get('/admin/activities')->assertOk();
 });
 
 it('forbids an agent from the audit log', function (): void {
     $agent = User::factory()->create(['tenant_id' => $this->tenant->id]);
     $agent->assignRole(Role::Agent->value);
 
-    $this->actingAs($agent)->get('/admin/activities')->assertForbidden();
+    $this->actingAs(withMfa($agent))->get('/admin/activities')->assertForbidden();
 });

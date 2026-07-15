@@ -28,7 +28,7 @@ it('shows a tenant admin only their own tenant tickets in the panel', function (
     $customerB = User::factory()->create(['tenant_id' => $tenantB->id]);
     app(CreateTicket::class)(new CreateTicketDTO('Bravo issue', 'body', $customerB->id));
 
-    $this->actingAs($adminA)->get('/admin/tickets')
+    $this->actingAs(withMfa($adminA))->get('/admin/tickets')
         ->assertOk()
         ->assertSee('Alpha issue')
         ->assertDontSee('Bravo issue');
@@ -48,7 +48,7 @@ it('shows a tenant admin only their own tenant agents in the panel', function ()
     $bob = User::factory()->create(['tenant_id' => $tenantB->id, 'name' => 'Bob Agent']);
     $bob->assignRole(Role::Agent->value);
 
-    $this->actingAs($adminA)->get('/admin/agents')
+    $this->actingAs(withMfa($adminA))->get('/admin/agents')
         ->assertOk()
         ->assertSee('Alice Agent')
         ->assertDontSee('Bob Agent');

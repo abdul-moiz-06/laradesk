@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetTenantForPanel;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,6 +33,12 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('LaraDesk')
             ->login()
             ->passwordReset()
+            // App-based (TOTP) two-factor, required for every panel user, with
+            // recovery codes. No SMS/email cost: the authenticator app is offline.
+            ->multiFactorAuthentication(
+                [AppAuthentication::make()->recoverable()],
+                isRequired: true,
+            )
             ->colors([
                 'primary' => Color::Teal,
             ])

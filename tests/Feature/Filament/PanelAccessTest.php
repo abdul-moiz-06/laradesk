@@ -21,7 +21,8 @@ function panelUser(string $role): User
     $user = User::factory()->create(['tenant_id' => $tenant->id]);
     $user->assignRole($role);
 
-    return $user;
+    // Panel users must have completed two-factor to pass the MFA-required guard.
+    return withMfa($user);
 }
 
 it('lets a tenant admin into the admin panel', function (): void {
