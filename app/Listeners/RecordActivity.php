@@ -29,9 +29,20 @@ final class RecordActivity
     {
         $request = request();
 
-        return [
+        $context = [
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ];
+
+        // While a SuperAdmin is impersonating, the causer is the company user
+        // being acted as; stamp the real actor so the trail stays honest about
+        // who actually did the work.
+        $impersonatorEmail = session()->get('impersonator_email');
+
+        if (is_string($impersonatorEmail)) {
+            $context['impersonated_by'] = $impersonatorEmail;
+        }
+
+        return $context;
     }
 }
