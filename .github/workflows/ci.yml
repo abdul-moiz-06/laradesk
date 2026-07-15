@@ -25,6 +25,10 @@ jobs:
   static-analysis:
     name: Static Analysis (Larastan, level max)
     runs-on: ubuntu-latest
+    # Larastan boots the application to analyse it; with encrypted sessions the
+    # boot needs an app key. This is a throwaway key for analysis only.
+    env:
+      APP_KEY: base64:Oaz8VEx1hsKLg1kDMtEvrgEx578OxsOJwqgqR+1wl+o=
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-php
