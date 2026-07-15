@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Contracts\AIServiceContract;
+use App\Contracts\PlatformMetricsContract;
 use App\Contracts\TenantServiceContract;
 use App\Services\AIService;
+use App\Services\PlatformMetricsService;
 use App\Services\TenantService;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(TenantServiceContract::class, TenantService::class);
         $this->app->bind(AIServiceContract::class, AIService::class);
+        $this->app->bind(PlatformMetricsContract::class, PlatformMetricsService::class);
     }
 
     public function boot(): void
