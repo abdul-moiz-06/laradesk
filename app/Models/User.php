@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Role;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -25,10 +28,20 @@ use Spatie\Permission\Traits\HasRoles;
  */
 #[Fillable(['name', 'email', 'password', 'tenant_id'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
+
+    /**
+     * Only tenant staff (a TenantAdmin or Agent) belonging to a tenant may enter
+     * the admin panel. The tenant itself is bound from this user by middleware.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->tenant_id !== null
+            && $this->hasAnyRole([Role::TenantAdmin->value, Role::Agent->value]);
+    }
 
     /**
      * @return BelongsTo<Tenant, $this>
