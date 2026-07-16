@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Portal\LoginController;
+use App\Http\Controllers\Portal\SubmitTicketController;
 use App\Http\Controllers\StopImpersonationController;
 use App\Http\Middleware\SetTenantFromCustomer;
+use App\Http\Middleware\SetTenantFromSignedRoute;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +31,14 @@ Route::prefix('portal')->name('portal.')->group(function (): void {
     Route::post('logout', [LoginController::class, 'destroy'])
         ->middleware('auth:customer')
         ->name('logout');
+
+    // Public ticket submission from a company's signed support link. The tenant
+    // is carried (by domain) in the tamper-proof signed URL.
+    Route::view('submitted', 'portal.submitted')->name('submitted');
+    Route::middleware(['signed', SetTenantFromSignedRoute::class])->group(function (): void {
+        Route::get('submit/{tenant:domain}', [SubmitTicketController::class, 'show'])->name('submit.show');
+        Route::post('submit/{tenant:domain}', [SubmitTicketController::class, 'store'])->name('submit.store');
+    });
 
     Route::middleware(['auth:customer', SetTenantFromCustomer::class])->group(function (): void {
         Route::view('/', 'portal.home')->name('home');
