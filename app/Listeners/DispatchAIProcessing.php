@@ -11,6 +11,6 @@ final class DispatchAIProcessing
 {
     public function handle(TicketCreated $event): void
     {
-        ProcessTicketWithAI::dispatch($event->ticket->id);
+        ProcessTicketWithAI::dispatch($event->ticket->id)->onQueue('ai');
     }
 }
