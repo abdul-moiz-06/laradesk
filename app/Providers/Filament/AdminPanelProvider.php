@@ -61,6 +61,10 @@ class AdminPanelProvider extends PanelProvider
                     ? view('filament.impersonation-banner')->render()
                     : '',
             )
+            // In-panel notification bell (database channel), polled so a logged-in
+            // agent sees new assignments and replies without a manual refresh.
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
