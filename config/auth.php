@@ -44,6 +44,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Customers sign in to their own web portal on a separate guard, so
+        // their session is isolated from staff (the web guard used by the
+        // Filament panels). Same users table, different session.
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
     ],
 
     /*
