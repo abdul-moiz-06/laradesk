@@ -17,7 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Unauthenticated customer-portal requests go to the portal sign-in,
+        // not the (non-existent) default login route. The Filament panels keep
+        // their own sign-in redirects.
+        $middleware->redirectGuestsTo(fn (Request $request): ?string => $request->is('portal', 'portal/*')
+            ? route('portal.login')
+            : null);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
