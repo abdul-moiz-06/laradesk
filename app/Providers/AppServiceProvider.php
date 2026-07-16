@@ -40,5 +40,16 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(60)->by($key);
         });
+
+        // Throttle magic-link requests by both IP and target email, so the
+        // portal sign-in cannot be used to spray links or probe accounts.
+        RateLimiter::for('portal-login', function (Request $request): array {
+            $email = $request->string('email')->lower()->toString();
+
+            return [
+                Limit::perMinute(5)->by('ip:'.($request->ip() ?? 'unknown')),
+                Limit::perMinute(3)->by('email:'.$email),
+            ];
+        });
     }
 }
