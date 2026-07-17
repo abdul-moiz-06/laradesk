@@ -7,6 +7,8 @@ use App\Http\Controllers\Portal\SubmitTicketController;
 use App\Http\Controllers\StopImpersonationController;
 use App\Http\Middleware\SetTenantFromCustomer;
 use App\Http\Middleware\SetTenantFromSignedRoute;
+use App\Livewire\Portal\TicketList;
+use App\Livewire\Portal\ViewTicket;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,6 +43,7 @@ Route::prefix('portal')->name('portal.')->group(function (): void {
     });
 
     Route::middleware(['auth:customer', SetTenantFromCustomer::class])->group(function (): void {
-        Route::view('/', 'portal.home')->name('home');
+        Route::get('/', TicketList::class)->name('home');
+        Route::get('tickets/{ulid}', ViewTicket::class)->name('tickets.show');
     });
 });
