@@ -36,7 +36,7 @@ it('lets an authenticated customer into the portal', function (): void {
     $this->actingAs($customer, 'customer')
         ->get('/portal')
         ->assertOk()
-        ->assertSee('Welcome');
+        ->assertSee('My tickets');
 
     expect(Tenant::current()?->getKey())->toBe($this->tenant->id);
 });

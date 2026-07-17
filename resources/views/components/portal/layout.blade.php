@@ -12,7 +12,12 @@
     <div class="mx-auto flex min-h-full max-w-3xl flex-col px-4">
         <header class="flex items-center justify-between py-6">
             <span class="text-lg font-semibold">{{ config('app.name') }} Support</span>
-            {{ $header ?? '' }}
+            @auth('customer')
+                <form method="POST" action="{{ route('portal.logout') }}">
+                    @csrf
+                    <button type="submit" class="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white">Sign out</button>
+                </form>
+            @endauth
         </header>
 
         <main class="flex-1 py-4">
