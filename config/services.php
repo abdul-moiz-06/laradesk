@@ -37,4 +37,12 @@ return [
         ],
     ],
 
+    // Cloudflare Turnstile bot protection for the public portal forms. When no
+    // secret is set (local, CI), verification is skipped, so the forms work
+    // without keys and switch on in production by setting these.
+    'turnstile' => [
+        'sitekey' => env('TURNSTILE_SITEKEY'),
+        'secret' => env('TURNSTILE_SECRET'),
+    ],
+
 ];
