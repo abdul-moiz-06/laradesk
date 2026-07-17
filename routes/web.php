@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\CompanySignupController;
 use App\Http\Controllers\Portal\LoginController;
 use App\Http\Controllers\Portal\SubmitTicketController;
 use App\Http\Controllers\StopImpersonationController;
@@ -11,9 +12,13 @@ use App\Livewire\Portal\TicketList;
 use App\Livewire\Portal\ViewTicket;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public marketing landing and self-serve company sign-up.
+Route::get('/', [CompanySignupController::class, 'landing'])->name('landing');
+Route::get('/signup', [CompanySignupController::class, 'show'])->name('signup');
+Route::post('/signup', [CompanySignupController::class, 'store'])
+    ->middleware('throttle:signup')
+    ->name('signup.store');
+Route::view('/signup/thanks', 'signup-thanks')->name('signup.thanks');
 
 Route::post('/impersonation/stop', StopImpersonationController::class)
     ->middleware('auth')
