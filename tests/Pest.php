@@ -15,7 +15,10 @@ pest()->extend(TestCase::class)
     ->in('Feature');
 
 // Feature tests must never hit the real Anthropic API: bind a canned AI service.
+// Also stub Vite, so views that reference built assets do not need a compiled
+// manifest (CI does not build front-end assets).
 pest()->beforeEach(function (): void {
+    $this->withoutVite();
     $this->app->bind(AIServiceContract::class, FakeAIService::class);
 })->in('Feature');
 

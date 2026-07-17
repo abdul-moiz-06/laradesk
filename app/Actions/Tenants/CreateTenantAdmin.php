@@ -42,9 +42,13 @@ final class CreateTenantAdmin
         $token = Password::createToken($admin);
         $notification = new ResetPassword($token);
         $notification->url = Filament::getPanel('admin')->getResetPasswordUrl($token, $admin);
-        $admin->notify($notification);
 
+        // Make the company current before dispatching: the invite is a queued,
+        // tenant-aware notification, so the worker needs a tenant to re-establish
+        // (otherwise it is silently skipped and the admin never gets the email).
         $tenant->makeCurrent();
+
+        $admin->notify($notification);
         TenantAdminInvited::dispatch($tenant, $admin);
 
         return $admin;

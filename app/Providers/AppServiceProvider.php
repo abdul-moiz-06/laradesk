@@ -51,5 +51,8 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perMinute(3)->by('email:'.$email),
             ];
         });
+
+        // Throttle public company sign-ups per IP to blunt automated abuse.
+        RateLimiter::for('signup', fn (Request $request): Limit => Limit::perMinute(5)->by('ip:'.($request->ip() ?? 'unknown')));
     }
 }
